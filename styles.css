@@ -1,0 +1,55 @@
+*::after,
+*::before {
+  box-sizing: border-box;
+  user-select: none;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+main {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 300px;
+}
+.score {
+  position: absolute;
+  font-size: 3vmin;
+  right: 1vmin;
+  top: 1vmin;
+}
+.start-message {
+  position: absolute;
+  font-size: 5vmin;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.hide {
+  display: none;
+}
+.ground {
+  --left: 0;
+  bottom: 0;
+  left: calc(var(--left) * 1%);
+  width: 300%;
+  position: absolute;
+}
+.kratos {
+  --bottom: 0;
+  position: absolute;
+  height: 60%;
+  left: 1%;
+  bottom: calc(var(--bottom) * 1%);
+}
+.obstacle {
+  position: absolute;
+  height: 60%;
+  bottom: 0;
+  left: calc(var(--left) * 1%);
+}
