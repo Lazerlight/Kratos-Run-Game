@@ -1,11 +1,13 @@
 const MAIN_WIDTH = 200;
 const MAIN_HEIGHT = 50;
+const SPEED_SCALE = 1;
+import { renderGround, setupGround } from "./ground.js";
 
 const mainEl = document.querySelector("main");
 
 setMainScale();
 window.addEventListener("resize", setMainScale);
-
+setupGround();
 function setMainScale() {
   let mainPixelScale;
 
@@ -18,3 +20,18 @@ function setMainScale() {
   mainEl.style.width = `${MAIN_WIDTH * mainPixelScale}px`;
   mainEl.style.height = `${MAIN_HEIGHT * mainPixelScale}px`;
 }
+
+let lastTime;
+function renderGame(time) {
+  if (lastTime == null) {
+    lastTime = time;
+    window.requestAnimationFrame(renderGame);
+    return;
+  }
+  const delta = time - lastTime;
+  renderGround(delta, SPEED_SCALE);
+
+  lastTime = time;
+  window.requestAnimationFrame(renderGame);
+}
+window.requestAnimationFrame(renderGame);
