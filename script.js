@@ -1,6 +1,6 @@
 const MAIN_WIDTH = 200;
 const MAIN_HEIGHT = 50;
-const SPEED_SCALE = 1;
+const SPEED_SCALE = 0.5;
 import { renderGround, setupGround } from "./ground.js";
 
 const mainEl = document.querySelector("main");
