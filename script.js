@@ -1,12 +1,14 @@
 const MAIN_WIDTH = 200;
 const MAIN_HEIGHT = 50;
-let INCREASE = 0;
+let INCREASE_SCALE = 0;
+let INCREASE_SCORE = 0;
 let SPEED_SCALE = 0;
-
+let SCORE = 0;
 import { renderGround, setupGround } from "./ground.js";
 
 const mainEl = document.querySelector("main");
 const startMessageEl = document.querySelector(".start-message");
+const scoreEl = document.querySelector(".score");
 
 setMainScale();
 document.addEventListener("keydown", gameStart, { once: true });
@@ -34,6 +36,7 @@ function renderGame(time) {
   const delta = time - lastTime;
   renderGround(delta, SPEED_SCALE);
   incSpeed(delta);
+  incScore(delta);
   lastTime = time;
   window.requestAnimationFrame(renderGame);
 }
@@ -42,10 +45,16 @@ window.requestAnimationFrame(renderGame);
 function gameStart() {
   lastTime = null;
   SPEED_SCALE = 0.5;
-  INCREASE = 0.000005;
+  INCREASE_SCALE = 0.000005;
+  INCREASE_SCORE = 0.01;
+  SCORE = 0;
   startMessageEl.classList.add("hide");
   setupGround();
 }
 function incSpeed(delta) {
-  SPEED_SCALE += delta * INCREASE;
+  SPEED_SCALE += delta * INCREASE_SCALE;
+}
+function incScore(delta) {
+  SCORE += delta * INCREASE_SCORE;
+  scoreEl.textContent = Math.floor(SCORE);
 }
