@@ -4,8 +4,10 @@ let INCREASE_SCALE = 0;
 let INCREASE_SCORE = 0;
 let SPEED_SCALE = 0;
 let SCORE = 0;
+
 import { renderGround, setupGround } from "./ground.js";
 import { renderKratos, setupKratos } from "./kratos.js";
+import { renderObstacle, setupObstacle } from "./obstacle.js";
 
 const mainEl = document.querySelector("main");
 const startMessageEl = document.querySelector(".start-message");
@@ -37,6 +39,7 @@ function renderGame(time) {
   const delta = time - lastTime;
   renderGround(delta, SPEED_SCALE);
   renderKratos(delta, SPEED_SCALE);
+  renderObstacle(delta, SPEED_SCALE);
   incSpeed(delta);
   incScore(delta);
   lastTime = time;
@@ -53,6 +56,7 @@ function gameStart() {
   startMessageEl.classList.add("hide");
   setupGround();
   setupKratos();
+  setupObstacle();
 }
 function incSpeed(delta) {
   SPEED_SCALE += delta * INCREASE_SCALE;
