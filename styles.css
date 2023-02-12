@@ -38,9 +38,11 @@ main {
   font-family: fantasy;
   font-style: italic;
   text-shadow: #d2e8ff 0 0 1vmin;
+  transition: 0.5s;
 }
 .hide {
-  display: none;
+  opacity: 0;
+  transition: 0.5s;
 }
 .ground {
   --left: 0;

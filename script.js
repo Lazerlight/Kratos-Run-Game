@@ -1,13 +1,16 @@
 const MAIN_WIDTH = 200;
 const MAIN_HEIGHT = 50;
-const SPEED_SCALE = 0.5;
+let INCREASE = 0;
+let SPEED_SCALE = 0;
+
 import { renderGround, setupGround } from "./ground.js";
 
 const mainEl = document.querySelector("main");
+const startMessageEl = document.querySelector(".start-message");
 
 setMainScale();
+document.addEventListener("keydown", gameStart, { once: true });
 window.addEventListener("resize", setMainScale);
-setupGround();
 function setMainScale() {
   let mainPixelScale;
 
@@ -30,8 +33,19 @@ function renderGame(time) {
   }
   const delta = time - lastTime;
   renderGround(delta, SPEED_SCALE);
-
+  incSpeed(delta);
   lastTime = time;
   window.requestAnimationFrame(renderGame);
 }
 window.requestAnimationFrame(renderGame);
+
+function gameStart() {
+  lastTime = null;
+  SPEED_SCALE = 0.5;
+  INCREASE = 0.000005;
+  startMessageEl.classList.add("hide");
+  setupGround();
+}
+function incSpeed(delta) {
+  SPEED_SCALE += delta * INCREASE;
+}
