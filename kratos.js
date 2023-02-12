@@ -1,7 +1,13 @@
-let FRAME_COUNT = 2;
 const FRAME_DELAY = 100;
-const JUMP_SPEED = 0.45;
-const GRAVITY = 0.011;
+const JUMP_SPEED = 0.35;
+const GRAVITY = 0.001;
+
+let JUMP_VELOCITY = 0;
+import {
+  getCustomProperty,
+  setCustomProperty,
+  incCustomProperty,
+} from "./CustomFunctions.js";
 
 const kratosEl = document.querySelector(".kratos");
 
@@ -10,7 +16,7 @@ let currentFrame;
 let currentFrameDelay;
 
 export function renderKratos(delta, speedScale) {
-  kratosJump();
+  kratosJump(delta);
   kratosRun(delta, speedScale);
 }
 
@@ -18,9 +24,23 @@ export function setupKratos() {
   isJumping = false;
   currentFrame = 0;
   currentFrameDelay = 0;
+  JUMP_VELOCITY = 0;
+  setCustomProperty(kratosEl, "--bottom", 0);
+  document.removeEventListener("keydown", jump);
+  document.addEventListener("keydown", jump);
 }
 
-function kratosJump() {}
+function kratosJump(delta) {
+  if (!isJumping) return;
+
+  incCustomProperty(kratosEl, "--bottom", JUMP_VELOCITY * delta);
+
+  if (getCustomProperty(kratosEl, "--bottom") <= 0) {
+    setCustomProperty(kratosEl, "--bottom", 0);
+    isJumping = false;
+  }
+  JUMP_VELOCITY -= GRAVITY * delta;
+}
 
 function kratosRun(delta, speedScale) {
   if (isJumping) {
@@ -31,7 +51,6 @@ function kratosRun(delta, speedScale) {
   if (currentFrameDelay >= FRAME_DELAY) {
     kratosEl.src = `./Graphics/kratosRun-${currentFrame}.png`;
     currentFrameDelay -= FRAME_DELAY;
-    console.log(currentFrame);
     if (currentFrame == 1) {
       currentFrame = 0;
     } else {
@@ -39,4 +58,11 @@ function kratosRun(delta, speedScale) {
     }
   }
   currentFrameDelay += delta * speedScale;
+}
+
+function jump(e) {
+  if (e.code !== "Space" || isJumping) return;
+
+  JUMP_VELOCITY = JUMP_SPEED;
+  isJumping = true;
 }
