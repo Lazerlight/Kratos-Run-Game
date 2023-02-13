@@ -20,6 +20,7 @@ const scoreEl = document.querySelector(".score");
 
 setMainScale();
 document.addEventListener("keydown", gameStart, { once: true });
+document.addEventListener("touchstart", gameStart, { once: true });
 window.addEventListener("resize", setMainScale);
 function setMainScale() {
   let mainPixelScale;
@@ -36,33 +37,46 @@ function setMainScale() {
 
 let lastTime;
 function renderGame(time) {
-  if (lastTime == null) {
+  if (!document.hidden || !document.webkitHidden) {
+    if (lastTime == null) {
+      lastTime = time;
+      window.requestAnimationFrame(renderGame);
+      return;
+    }
+    const delta = time - lastTime;
+    renderGround(delta, SPEED_SCALE);
+    renderKratos(delta, SPEED_SCALE);
+    renderObstacle(delta, SPEED_SCALE);
+    incSpeed(delta);
+    incScore(delta);
+    if (gameEnd(kratosRect())) return handleLose();
     lastTime = time;
-    window.requestAnimationFrame(renderGame);
-    return;
+  } else {
+    handleLose();
+    this.stop();
+    return handleLose();
   }
-  const delta = time - lastTime;
-  renderGround(delta, SPEED_SCALE);
-  renderKratos(delta, SPEED_SCALE);
-  renderObstacle(delta, SPEED_SCALE);
-  incSpeed(delta);
-  incScore(delta);
-  if (gameEnd(kratosRect())) return handleLose();
-  lastTime = time;
   window.requestAnimationFrame(renderGame);
 }
+
 window.requestAnimationFrame(renderGame);
 
 function gameStart() {
-  lastTime = null;
-  SPEED_SCALE = 0.5;
-  INCREASE_SCALE = 0.000005;
-  INCREASE_SCORE = 0.01;
-  SCORE = 0;
-  startMessageEl.classList.add("hide");
-  setupGround();
-  setupKratos();
-  setupObstacle();
+  if (!document.hidden || !document.webkitHidden) {
+    lastTime = null;
+    SPEED_SCALE = 0.5;
+    INCREASE_SCALE = 0.000005;
+    INCREASE_SCORE = 0.01;
+    SCORE = 0;
+    startMessageEl.classList.add("hide");
+    setupGround();
+    setupKratos();
+    setupObstacle();
+  } else {
+    handleLose();
+    this.stop();
+    return handleLose();
+  }
   window.requestAnimationFrame(renderGame);
 }
 function incSpeed(delta) {
@@ -85,8 +99,15 @@ function isCollison(rect1, rect2) {
 }
 function handleLose() {
   startMessageEl.classList.remove("hide");
+  playDeadAudio();
   setKratosDead();
   setTimeout(() => {
     document.addEventListener("keydown", gameStart, { once: true });
+    document.addEventListener("touchstart", gameStart, { once: true });
   }, 1000);
+}
+
+function playDeadAudio() {
+  const audio = new Audio("./Audio/kratosDead.mp3");
+  audio.play();
 }

@@ -1,5 +1,5 @@
 const FRAME_DELAY = 100;
-const JUMP_SPEED = 0.35;
+const JUMP_SPEED = 0.45;
 const GRAVITY = 0.001;
 
 let JUMP_VELOCITY = 0;
@@ -29,7 +29,9 @@ export function setupKratos() {
   JUMP_VELOCITY = 0;
   setCustomProperty(kratosEl, "--bottom", 0);
   document.removeEventListener("keydown", jump);
+  document.removeEventListener("touchstart", jumpMobile);
   document.addEventListener("keydown", jump);
+  document.addEventListener("touchstart", jumpMobile);
 }
 export function kratosRect() {
   return kratosEl.getBoundingClientRect();
@@ -69,4 +71,15 @@ function jump(e) {
 
   JUMP_VELOCITY = JUMP_SPEED;
   isJumping = true;
+  playJumpAudio();
+}
+function jumpMobile(e) {
+  if (isJumping) return;
+  JUMP_VELOCITY = JUMP_SPEED;
+  isJumping = true;
+  playJumpAudio();
+}
+function playJumpAudio() {
+  const audio = new Audio("./Audio/kratosJump.mp3");
+  audio.play();
 }
