@@ -35,6 +35,12 @@ export function setupObstacle() {
   });
 }
 
+export function obstacleRect() {
+  return [...document.querySelectorAll(".obstacle")].map((e) => {
+    return e.getBoundingClientRect();
+  });
+}
+
 function createObstacle() {
   const Obstacle = document.createElement("img");
   Obstacle.src = "./Graphics/spike.png";

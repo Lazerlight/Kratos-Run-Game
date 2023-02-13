@@ -19,7 +19,9 @@ export function renderKratos(delta, speedScale) {
   kratosJump(delta);
   kratosRun(delta, speedScale);
 }
-
+export function setKratosDead() {
+  kratosEl.src = "./Graphics/kratosDead.png";
+}
 export function setupKratos() {
   isJumping = false;
   currentFrame = 0;
@@ -29,7 +31,9 @@ export function setupKratos() {
   document.removeEventListener("keydown", jump);
   document.addEventListener("keydown", jump);
 }
-
+export function kratosRect() {
+  return kratosEl.getBoundingClientRect();
+}
 function kratosJump(delta) {
   if (!isJumping) return;
 

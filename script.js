@@ -6,8 +6,13 @@ let SPEED_SCALE = 0;
 let SCORE = 0;
 
 import { renderGround, setupGround } from "./ground.js";
-import { renderKratos, setupKratos } from "./kratos.js";
-import { renderObstacle, setupObstacle } from "./obstacle.js";
+import {
+  renderKratos,
+  setupKratos,
+  kratosRect,
+  setKratosDead,
+} from "./kratos.js";
+import { renderObstacle, setupObstacle, obstacleRect } from "./obstacle.js";
 
 const mainEl = document.querySelector("main");
 const startMessageEl = document.querySelector(".start-message");
@@ -42,6 +47,7 @@ function renderGame(time) {
   renderObstacle(delta, SPEED_SCALE);
   incSpeed(delta);
   incScore(delta);
+  if (gameEnd(kratosRect())) return handleLose();
   lastTime = time;
   window.requestAnimationFrame(renderGame);
 }
@@ -57,6 +63,7 @@ function gameStart() {
   setupGround();
   setupKratos();
   setupObstacle();
+  window.requestAnimationFrame(renderGame);
 }
 function incSpeed(delta) {
   SPEED_SCALE += delta * INCREASE_SCALE;
@@ -64,4 +71,22 @@ function incSpeed(delta) {
 function incScore(delta) {
   SCORE += delta * INCREASE_SCORE;
   scoreEl.textContent = Math.floor(SCORE);
+}
+function gameEnd(kratosRect) {
+  return obstacleRect().some((rect) => isCollison(rect, kratosRect));
+}
+function isCollison(rect1, rect2) {
+  return (
+    rect1.left < rect2.right &&
+    rect1.top < rect2.bottom &&
+    rect1.right > rect2.left &&
+    rect1.bottom > rect2.top
+  );
+}
+function handleLose() {
+  startMessageEl.classList.remove("hide");
+  setKratosDead();
+  setTimeout(() => {
+    document.addEventListener("keydown", gameStart, { once: true });
+  }, 1000);
 }
