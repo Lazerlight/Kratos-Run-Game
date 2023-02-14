@@ -7,17 +7,20 @@ let SPEED_SCALE = 0;
 let SCORE = 0;
 
 import { renderGround, setupGround } from "./ground.js";
+import { renderObstacle, setupObstacle, obstacleRect } from "./obstacle.js";
+import { renderBat, setupBat, batRect } from "./bat.js";
+import { renderSnake, setupSnake, snakeRect } from "./snake.js";
 import {
   renderKratos,
   setupKratos,
   kratosRect,
   setKratosDead,
 } from "./kratos.js";
-import { renderObstacle, setupObstacle, obstacleRect } from "./obstacle.js";
 
 const mainEl = document.querySelector("main");
 const startMessageEl = document.querySelector(".start-message");
 const scoreEl = document.querySelector(".score");
+const topScoreEl = document.querySelector(".top-score");
 
 setMainScale();
 document.addEventListener("keydown", gameStart, { once: true });
@@ -48,8 +51,11 @@ function renderGame(time) {
     renderGround(delta, SPEED_SCALE);
     renderKratos(delta, SPEED_SCALE);
     renderObstacle(delta, SPEED_SCALE);
+    renderBat(delta, SPEED_SCALE);
+    renderSnake(delta, SPEED_SCALE);
     incSpeed(delta);
     incScore(delta);
+    calcTopScore();
     if (gameEnd(kratosRect()) || blurTab) return handleLose();
     lastTime = time;
     window.addEventListener("blur", checkTab, { once: true });
@@ -57,7 +63,6 @@ function renderGame(time) {
   window.requestAnimationFrame(renderGame);
 }
 function checkTab() {
-  console.log("BUG DIIFX");
   INCREASE_SCORE = 0;
   blurTab = true;
 }
@@ -75,6 +80,8 @@ function gameStart() {
     setupGround();
     setupKratos();
     setupObstacle();
+    setupBat();
+    setupSnake();
   }
   window.requestAnimationFrame(renderGame);
 }
@@ -85,8 +92,25 @@ function incScore(delta) {
   SCORE += delta * INCREASE_SCORE;
   scoreEl.textContent = Math.floor(SCORE);
 }
+function calcTopScore() {
+  let topScore = localStorage.getItem("TopScore");
+  if (topScore === null) {
+    localStorage.setItem("TopScore", Math.floor(SCORE));
+    return;
+  }
+  if (topScore < Math.floor(SCORE)) {
+    localStorage.setItem("TopScore", Math.floor(SCORE));
+    topScoreEl.textContent = `Top Score: ${topScore}`;
+  }
+  topScoreEl.textContent = `Top Score: ${topScore}`;
+  console.log(Math.floor(topScore));
+}
 function gameEnd(kratosRect) {
-  return obstacleRect().some((rect) => isCollison(rect, kratosRect));
+  return (
+    obstacleRect().some((rect) => isCollison(rect, kratosRect)) ||
+    batRect().some((rect) => isCollison(rect, kratosRect)) ||
+    snakeRect().some((rect) => isCollison(rect, kratosRect))
+  );
 }
 function isCollison(rect1, rect2) {
   return (
