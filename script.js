@@ -51,14 +51,16 @@ function renderGame(time) {
     incScore(delta);
     if (gameEnd(kratosRect())) return handleLose();
     lastTime = time;
-  } else {
-    handleLose();
-    this.stop();
-    return handleLose();
+    console.log("GAME RENDER");
+    window.addEventListener("focus", bugFix, { once: true });
   }
   window.requestAnimationFrame(renderGame);
 }
-
+function bugFix() {
+  console.log("BUG DIIFX");
+  INCREASE_SCORE = 0;
+  return handleLose();
+}
 window.requestAnimationFrame(renderGame);
 
 function gameStart() {
@@ -72,10 +74,7 @@ function gameStart() {
     setupGround();
     setupKratos();
     setupObstacle();
-  } else {
-    handleLose();
-    this.stop();
-    return handleLose();
+    console.log("GAME START");
   }
   window.requestAnimationFrame(renderGame);
 }

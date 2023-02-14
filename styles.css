@@ -54,7 +54,7 @@ main {
 .kratos {
   --bottom: 0;
   position: absolute;
-  height: 60%;
+  height: 40%;
   left: 1%;
   bottom: calc(var(--bottom) * 1%);
 }
