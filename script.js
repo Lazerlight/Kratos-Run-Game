@@ -1,5 +1,6 @@
 const MAIN_WIDTH = 200;
 const MAIN_HEIGHT = 50;
+let blurTab = false;
 let INCREASE_SCALE = 0;
 let INCREASE_SCORE = 0;
 let SPEED_SCALE = 0;
@@ -49,22 +50,22 @@ function renderGame(time) {
     renderObstacle(delta, SPEED_SCALE);
     incSpeed(delta);
     incScore(delta);
-    if (gameEnd(kratosRect())) return handleLose();
+    if (gameEnd(kratosRect()) || blurTab) return handleLose();
     lastTime = time;
-    console.log("GAME RENDER");
-    window.addEventListener("focus", bugFix, { once: true });
+    window.addEventListener("blur", checkTab, { once: true });
   }
   window.requestAnimationFrame(renderGame);
 }
-function bugFix() {
+function checkTab() {
   console.log("BUG DIIFX");
   INCREASE_SCORE = 0;
-  return handleLose();
+  blurTab = true;
 }
 window.requestAnimationFrame(renderGame);
 
 function gameStart() {
   if (!document.hidden || !document.webkitHidden) {
+    blurTab = false;
     lastTime = null;
     SPEED_SCALE = 0.5;
     INCREASE_SCALE = 0.000005;
@@ -74,7 +75,6 @@ function gameStart() {
     setupGround();
     setupKratos();
     setupObstacle();
-    console.log("GAME START");
   }
   window.requestAnimationFrame(renderGame);
 }
